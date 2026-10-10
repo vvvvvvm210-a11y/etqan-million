@@ -142,6 +142,83 @@ background:rgba(250,247,252,.82);backdrop-filter:blur(8px);opacity:0;visibility:
 .lifelines{position:fixed;z-index:35;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));grid-template-columns:repeat(4,1fr);gap:5px;margin:0;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:0 8px 28px rgba(50,25,60,.18)}.life{min-height:46px;padding:4px 2px;font-size:.74rem;line-height:1.12}
 }
 @media(max-width:390px){.title h1{font-size:1rem}.logo{width:76px}.question{font-size:.96rem}.answer{font-size:.87rem}.life{font-size:.69rem}.stage-card strong{font-size:.93rem}}
+
+/* V4.3 responsive cinematic polish */
+.cinema-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:min(92vh,820px);
+  padding:clamp(14px,2.5vh,28px) 18px;
+}
+.cinema-logo-wrap{width:100%}
+.cinema-logo{
+  width:clamp(300px,32vw,500px);
+  max-width:82vw;
+  max-height:26vh;
+  object-fit:contain;
+}
+.cinema-title{
+  font-size:clamp(2.5rem,6.6vw,4.8rem);
+  line-height:1.04;
+  margin-top:clamp(8px,1.6vh,16px);
+}
+.cinema-sub{font-size:clamp(.9rem,1.5vw,1.08rem)}
+.cinema-line{margin:clamp(12px,2vh,20px) auto clamp(14px,2.2vh,22px)}
+.cinema-btn{min-width:170px}
+.cinema-note{margin-top:9px}
+
+/* Normal correct-answer brand flash: faster and subtler */
+.brand-flash{background:radial-gradient(circle at center,rgba(124,73,156,.085),transparent 31%)}
+.brand-flash img{width:clamp(100px,13vw,145px)}
+.brand-flash span{font-size:.68rem}
+.brand-flash.show{animation:brandFlash .52s ease-out}
+.brand-flash.show .brand-flash-card{animation:brandPop .52s ease-out}
+
+/* Milestones remain more substantial, but faster */
+.milestone.show{animation:milestoneFade 1.18s ease both}
+.milestone.show .milestone-card{animation:milestonePop 1.18s ease both}
+
+/* Prevent accidental scroll on intro */
+body:has(.cinema){overflow-x:hidden}
+
+@media (min-width:1400px){
+  .cinema-logo{width:500px}
+  .cinema-title{font-size:4.9rem}
+}
+@media (min-width:761px) and (max-height:720px){
+  .cinema-inner{min-height:96vh;padding:8px 16px}
+  .cinema-logo{max-height:22vh;width:clamp(250px,27vw,390px)}
+  .cinema-title{font-size:clamp(2.2rem,5.5vw,3.8rem);margin-top:5px}
+  .cinema-line{margin:9px auto 11px}
+  .cinema-note{margin-top:6px}
+}
+@media (max-width:760px){
+  .cinema-inner{min-height:calc(100svh - 8px);padding:14px 12px}
+  .cinema-logo{width:clamp(230px,70vw,310px);max-height:25vh}
+  .cinema-title{font-size:clamp(2.2rem,11.5vw,3.35rem);margin-top:10px}
+  .cinema-sub{font-size:.9rem}
+  .cinema-line{margin:13px auto 16px}
+  .cinema-btn{min-height:52px;min-width:165px}
+  .cinema-note{font-size:.66rem;margin-top:8px}
+  .brand-flash img{width:108px}
+}
+@media (max-width:390px), (max-height:640px){
+  .cinema-logo{width:clamp(205px,64vw,260px);max-height:22vh}
+  .cinema-title{font-size:clamp(2rem,10.5vw,2.9rem)}
+  .cinema-sub{font-size:.82rem}
+  .cinema-line{margin:9px auto 11px}
+  .cinema-note{display:none}
+}
+
+/* Accessibility and smoother low-power devices */
+@media (prefers-reduced-motion:reduce){
+  .cinema-bg,.cinema-beam,.cinema-ring,.cinema-particles i,
+  .cinema-title:after,.cinema-btn:before{animation:none!important}
+  .cinema-logo,.cinema-title,.cinema-sub,.cinema-line,.cinema-btn,.cinema-note{animation-duration:.01ms!important;animation-delay:0s!important;opacity:1!important;transform:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -224,7 +301,8 @@ function setTheme(theme){document.documentElement.setAttribute('data-theme',them
 function buildCinemaParticles(){
  const box=$('cinemaParticles'); if(!box)return;
  box.innerHTML='';
- for(let i=0;i<34;i++){
+ const count=window.innerWidth<=760?18:34;
+ for(let i=0;i<count;i++){
    const p=document.createElement('i');
    p.style.left=(Math.random()*100)+'%';
    p.style.animationDuration=(5+Math.random()*7)+'s';
@@ -239,22 +317,22 @@ function showBrandFlash(){
  const b=$('brandFlash'); if(!b)return Promise.resolve();
  return new Promise(resolve=>{
    b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
-   setTimeout(()=>{b.classList.remove('show');resolve()},690);
+   setTimeout(()=>{b.classList.remove('show');resolve()},530);
  });
 }
 
 function showMilestone(which){
  const box=$('milestone'); if(!box)return Promise.resolve();
  if(which===5){
-   $('milestoneTitle').textContent='أكملت المرحلة الأولى';
-   $('milestoneSub').textContent='وصلت إلى 1,000 ريال';
+   $('milestoneTitle').textContent='أحسنت! أكملت المرحلة الأولى';
+   $('milestoneSub').textContent='رصيدك الآن 1,000 ريال';
  }else{
-   $('milestoneTitle').textContent='وصلت إلى نقطة الأمان';
+   $('milestoneTitle').textContent='نقطة أمان جديدة';
    $('milestoneSub').textContent='32,000 ريال محفوظة';
  }
  return new Promise(resolve=>{
    box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
-   setTimeout(()=>{box.classList.remove('show');resolve()},1450);
+   setTimeout(()=>{box.classList.remove('show');resolve()},1190);
  });
 }
 
@@ -330,9 +408,9 @@ $('friend').onclick=e=>{if(used.friend||locked)return;used.friend=true;e.current
 $('cinemaBtn').onclick=async()=>{
  const c=$('cinema');
  c.classList.add('launch');
- playSound(MAP.intro_effect,4200);
- setTimeout(()=>c.classList.add('exit'),720);
- setTimeout(()=>c.remove(),1480);
+ playSound(MAP.intro_effect,3600);
+ setTimeout(()=>c.classList.add('exit'),560);
+ setTimeout(()=>c.remove(),1180);
 };
 $('startBtn').onclick=async()=>{if(!selectedStage)return;buildRound();idx=0;used={fifty:false,audience:false,friend:false,swap:false};['fifty','audience','friend','swap'].forEach(id=>$(id).classList.remove('used'));$('stageScreen').classList.add('hidden-screen');$('endScreen').classList.add('hidden-screen');$('gameScreen').classList.remove('hidden-screen');await playSound(MAP.intro_voice,6500);render()};
 $('restartBtn').onclick=()=>location.reload();
