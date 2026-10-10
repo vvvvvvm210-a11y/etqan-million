@@ -646,6 +646,174 @@ body:has(.cinema){overflow-x:hidden}
   .question-progress{margin:6px 0 8px}
 }
 
+
+/* V4.7 premium lifelines */
+.lifelines{
+  gap:10px;
+}
+.life{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:54px;
+  border-radius:15px;
+  border:1px solid rgba(124,73,156,.16);
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:0 8px 18px rgba(63,31,76,.045);
+  transition:.18s ease;
+}
+.life:hover{
+  transform:translateY(-2px);
+  border-color:rgba(124,73,156,.42);
+  box-shadow:0 12px 24px rgba(63,31,76,.08)
+}
+.life:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 28%,rgba(255,255,255,.35) 48%,transparent 68%);
+  transform:translateX(-140%);
+  opacity:0
+}
+.life.activating:before{
+  opacity:1;
+  animation:lifeSweep .7s ease
+}
+.life.used{
+  opacity:.42;
+  filter:grayscale(.25);
+  text-decoration:none;
+}
+.life.used:after{
+  content:"✓";
+  position:absolute;
+  top:5px;
+  left:7px;
+  width:18px;height:18px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:rgba(124,73,156,.12);
+  color:var(--p);
+  font-size:.7rem;
+  font-weight:1000
+}
+.life-icon{
+  width:31px;height:31px;
+  display:grid;place-items:center;
+  border-radius:10px;
+  background:rgba(124,73,156,.07);
+  border:1px solid rgba(124,73,156,.1);
+  font-size:1rem
+}
+.life-label{
+  font-weight:900;
+}
+.lifeline-toast{
+  position:fixed;
+  left:50%;
+  top:18%;
+  transform:translateX(-50%) translateY(-8px);
+  z-index:210;
+  min-width:min(88vw,360px);
+  max-width:88vw;
+  padding:13px 16px;
+  text-align:center;
+  border-radius:16px;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(124,73,156,.16);
+  box-shadow:0 16px 42px rgba(54,28,66,.14);
+  color:#4f2d61;
+  font-weight:900;
+  opacity:0;
+  visibility:hidden;
+  backdrop-filter:blur(8px)
+}
+[data-theme="dark"] .lifeline-toast{
+  background:rgba(31,17,38,.94);
+  color:#f5eefa
+}
+.lifeline-toast.show{
+  visibility:visible;
+  animation:lifeToast 1.15s ease both
+}
+.audience.show{
+  animation:audienceIn .35s ease
+}
+.vote{
+  position:relative;
+  overflow:hidden;
+}
+.vote:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:var(--bar,0%);
+  background:linear-gradient(180deg,rgba(124,73,156,.04),rgba(124,73,156,.14));
+  z-index:0;
+  transition:height .45s ease
+}
+.vote > *{position:relative;z-index:1}
+.friend-card{
+  display:none;
+  margin:8px 0 2px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid rgba(124,73,156,.14);
+  box-shadow:0 8px 18px rgba(63,31,76,.05);
+  text-align:center;
+  color:var(--txt)
+}
+.friend-card.show{
+  display:block;
+  animation:friendIn .42s ease
+}
+.friend-avatar{
+  width:44px;height:44px;
+  margin:0 auto 7px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:rgba(124,73,156,.09);
+  border:1px solid rgba(124,73,156,.12);
+  font-size:1.25rem
+}
+.friend-title{font-weight:1000;color:var(--p)}
+.friend-answer{margin-top:4px;font-size:.9rem;color:var(--muted)}
+.swap-flash{
+  animation:swapFlash .5s ease
+}
+@keyframes lifeSweep{
+  to{transform:translateX(140%)}
+}
+@keyframes lifeToast{
+  0%{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.96)}
+  18%,78%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-4px) scale(.98)}
+}
+@keyframes audienceIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+@keyframes friendIn{
+  from{opacity:0;transform:translateY(8px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+@keyframes swapFlash{
+  0%{filter:brightness(1)}
+  45%{filter:brightness(1.12);transform:scale(.995)}
+  100%{filter:brightness(1)}
+}
+@media(max-width:760px){
+  .lifelines{gap:5px}
+  .life{min-height:48px;gap:3px}
+  .life-icon{width:27px;height:27px;border-radius:8px;font-size:.9rem}
+  .life-label{font-size:.68rem}
+  .lifeline-toast{top:14%;font-size:.86rem}
+}
+
 </style>
 </head>
 <body>
@@ -705,7 +873,7 @@ body:has(.cinema){overflow-x:hidden}
 </div>
 
 
-<div id="flash"<div id="flash" class="flash"></div><div id="confetti" class="confetti"></div>
+<div id="flash"<div id="flash" class="flash"></div><div id="lifelineToast" class="lifeline-toast"></div><div id="confetti" class="confetti"></div>
 <div id="overlay" class="overlay"><div class="finalcard"><h3>هل هذه إجابتك النهائية؟</h3><div id="finalChoice" class="finalchoice"></div><div class="actions"><button id="yesFinal" class="yes">نعم، إجابة نهائية</button><button id="noFinal" class="no">تغيير الإجابة</button></div></div></div>
 
 <div class="app">
@@ -727,8 +895,19 @@ body:has(.cinema){overflow-x:hidden}
 <div class="status"><div id="qnum" class="pill"></div>
 <div class="question-progress"><i id="questionProgress"></i></div><div id="tier" class="pill tier-pill"></div><div id="timer" class="pill timer">30</div></div>
 <div class="question-wrap"><div id="domain" class="question-label"></div><div id="question" class="question"></div></div>
-<div id="answers" class="answers"></div><div id="audienceBox" class="audience"></div><div id="message" class="message"></div>
-<div class="lifelines"><button id="fifty" class="life">50:50</button><button id="audience" class="life">👥 الجمهور</button><button id="friend" class="life">📞 صديق</button><button id="swap" class="life">🔄 تبديل</button></div>
+<div id="answers" class="answers"></div><div id="audienceBox" class="audience"></div>
+<div id="friendCard" class="friend-card">
+  <div class="friend-avatar">📞</div>
+  <div class="friend-title">رأي الصديق</div>
+  <div id="friendAnswer" class="friend-answer"></div>
+</div>
+<div id="message" class="message"></div>
+<div class="lifelines">
+<button id="fifty" class="life"><span class="life-icon">½</span><span class="life-label">50:50</span></button>
+<button id="audience" class="life"><span class="life-icon">👥</span><span class="life-label">الجمهور</span></button>
+<button id="friend" class="life"><span class="life-icon">📞</span><span class="life-label">صديق</span></button>
+<button id="swap" class="life"><span class="life-icon">🔄</span><span class="life-label">تبديل</span></button>
+</div>
 </main><aside id="ladder" class="ladder"><h3>🏆 سلم الجوائز</h3><div id="ladderList"></div></aside></div>
 </section>
 
@@ -808,6 +987,19 @@ function showMilestone(which){
 
 setTheme(localStorage.getItem('etqan_theme')||'light');$('themeBtn').onclick=()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
 
+
+function showLifelineToast(text){
+ const t=$('lifelineToast'); if(!t)return;
+ t.textContent=text;
+ t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+ setTimeout(()=>t.classList.remove('show'),1160);
+}
+function activateLife(btn,text){
+ btn.classList.add('activating');
+ showLifelineToast(text);
+ setTimeout(()=>btn.classList.remove('activating'),720);
+}
+
 function stopAudio(){if(currentAudio){currentAudio.pause();try{currentAudio.currentTime=0}catch(e){}currentAudio=null}}
 function playSound(id,maxMs=0){return new Promise(resolve=>{if(muted||!id){resolve();return}stopAudio();const src=INLINE_AUDIO[String(id)];if(!src){resolve();return}const a=new Audio(src);a.volume=volume;currentAudio=a;let done=false;const finish=()=>{if(done)return;done=true;resolve()};a.addEventListener('ended',finish,{once:true});a.addEventListener('error',finish,{once:true});a.play().catch(finish);if(maxMs)setTimeout(finish,maxMs)})}
 $('vol').oninput=e=>{volume=Number(e.target.value);if(currentAudio)currentAudio.volume=volume};$('mute').onclick=()=>{muted=!muted;if(muted)stopAudio();$('mute').textContent=muted?'🔇':'🔊'};
@@ -867,7 +1059,7 @@ $('prizeToggle').onclick=()=>$('ladder').classList.toggle('open');
 function startTimer(){clearInterval(timerId);time=30;$('timer').textContent=time;$('timer').classList.remove('danger');timerId=setInterval(()=>{time--;$('timer').textContent=time;if(time<=10)$('timer').classList.add('danger');if(time<=0){clearInterval(timerId);handleWrong('انتهى الوقت.')}},1000)}
 
 async function render(){
- locked=false;selected=null;$('message').textContent='';$('audienceBox').classList.remove('show');$('audienceBox').innerHTML='';$('ladder').classList.remove('open');
+ locked=false;selected=null;$('message').textContent='';$('audienceBox').classList.remove('show');$('audienceBox').innerHTML='';$('friendCard').classList.remove('show');$('friendAnswer').textContent='';$('ladder').classList.remove('open');
  const qn=idx+1,item=Q[idx];$('qnum').textContent=`السؤال ${qn} من 15`;$('tier').textContent=`${item.tier} نقطة`;$('domain').textContent=item.domain;$('questionProgress').style.width=((qn/15)*100)+'%';
  $('question').textContent=`السؤال ${qn}`;$('answers').innerHTML='';
  drawLadder();
@@ -928,10 +1120,67 @@ $('winClose').onclick=()=>{
 };
 
 $('yesFinal').onclick=resolveFinal;$('noFinal').onclick=()=>{$('overlay').classList.remove('show');selected=null;$('message').textContent='';$('message').classList.remove('locking');[...$('answers').children].forEach(x=>x.classList.remove('selected','locked-choice'))};
-$('fifty').onclick=async e=>{if(used.fifty||locked)return;used.fifty=true;e.currentTarget.classList.add('used');stopAudio();await playSound(MAP.fifty_fifty,6500);const c=Q[idx].c,wrong=[0,1,2,3].filter(i=>i!==c).sort(()=>Math.random()-.5).slice(0,2);wrong.forEach(i=>$('answers').children[i].classList.add('hidden'));$('message').textContent='تم حذف إجابتين.'};
-$('swap').onclick=async e=>{if(used.swap||locked)return;used.swap=true;e.currentTarget.classList.add('used');stopAudio();await playSound(MAP.change_question,6500);const item=Q[idx];let pool=BANK.filter(q=>q.stage===selectedStage&&q.tier===item.tier&&!usedIds.has(q.id));if(pool.length===0)pool=BANK.filter(q=>q.stage===selectedStage&&q.tier===item.tier&&q.id!==item.id);const repl=pool[Math.floor(Math.random()*pool.length)];if(repl){usedIds.add(repl.id);Q[idx]=repl}render()};
-$('audience').onclick=e=>{if(used.audience||locked)return;used.audience=true;e.currentTarget.classList.add('used');const c=Q[idx].c;let vals=[12,14,16,18];vals[c]=58;const total=vals.reduce((a,b)=>a+b,0);vals=vals.map(v=>Math.round(v*100/total));vals[c]+=100-vals.reduce((a,b)=>a+b,0);$('audienceBox').innerHTML='';vals.forEach((v,i)=>{const d=document.createElement('div');d.className='vote';d.innerHTML=`${['أ','ب','ج','د'][i]}<b>${v}%</b>`;$('audienceBox').appendChild(d)});$('audienceBox').classList.add('show')};
-$('friend').onclick=e=>{if(used.friend||locked)return;used.friend=true;e.currentTarget.classList.add('used');const c=Q[idx].c,guess=Math.random()<.8?c:Math.floor(Math.random()*4);$('message').textContent=`📞 الصديق يرجّح الإجابة (${['أ','ب','ج','د'][guess]}).`};
+$('fifty').onclick=async e=>{
+ if(used.fifty||locked)return;
+ used.fifty=true;
+ e.currentTarget.classList.add('used');
+ activateLife(e.currentTarget,'50:50 — سيتم حذف إجابتين خاطئتين');
+ stopAudio();
+ await playSound(MAP.fifty_fifty,6500);
+ const c=Q[idx].c,wrong=[0,1,2,3].filter(i=>i!==c).sort(()=>Math.random()-.5).slice(0,2);
+ wrong.forEach(i=>$('answers').children[i].classList.add('hidden'));
+ $('message').textContent='تم حذف إجابتين خاطئتين.';
+};
+$('swap').onclick=async e=>{
+ if(used.swap||locked)return;
+ used.swap=true;
+ e.currentTarget.classList.add('used');
+ activateLife(e.currentTarget,'تبديل السؤال — سؤال جديد من نفس المستوى');
+ stopAudio();
+ await playSound(MAP.change_question,6500);
+ const item=Q[idx];
+ let pool=BANK.filter(q=>q.stage===selectedStage&&q.tier===item.tier&&!usedIds.has(q.id));
+ if(pool.length===0)pool=BANK.filter(q=>q.stage===selectedStage&&q.tier===item.tier&&q.id!==item.id);
+ const repl=pool[Math.floor(Math.random()*pool.length)];
+ if(repl){usedIds.add(repl.id);Q[idx]=repl}
+ $('question').classList.add('swap-flash');
+ setTimeout(()=>$('question').classList.remove('swap-flash'),520);
+ render();
+};
+$('audience').onclick=e=>{
+ if(used.audience||locked)return;
+ used.audience=true;
+ e.currentTarget.classList.add('used');
+ activateLife(e.currentTarget,'تصويت الجمهور — جاري جمع الآراء');
+ const c=Q[idx].c;
+ let vals=[12,14,16,18];
+ vals[c]=58;
+ const total=vals.reduce((a,b)=>a+b,0);
+ vals=vals.map(v=>Math.round(v*100/total));
+ vals[c]+=100-vals.reduce((a,b)=>a+b,0);
+ $('audienceBox').innerHTML='';
+ vals.forEach((v,i)=>{
+   const d=document.createElement('div');
+   d.className='vote';
+   d.style.setProperty('--bar',v+'%');
+   d.innerHTML=`<span>${['أ','ب','ج','د'][i]}</span><b>${v}%</b>`;
+   $('audienceBox').appendChild(d)
+ });
+ $('audienceBox').classList.add('show');
+ $('message').textContent='الجمهور يرجّح الإجابة ذات النسبة الأعلى.';
+};
+$('friend').onclick=e=>{
+ if(used.friend||locked)return;
+ used.friend=true;
+ e.currentTarget.classList.add('used');
+ activateLife(e.currentTarget,'الاتصال بصديق — لحظة تفكير');
+ const c=Q[idx].c;
+ const guess=Math.random()<.8?c:Math.floor(Math.random()*4);
+ const letter=['أ','ب','ج','د'][guess];
+ $('friendAnswer').textContent=`أعتقد أن الإجابة الأقرب هي (${letter}) — لكن القرار لك.`;
+ $('friendCard').classList.add('show');
+ $('message').textContent='الصديق أعطاك رأيه.';
+};
 
 $('cinemaBtn').onclick=async()=>{
  const c=$('cinema');
